@@ -4,7 +4,7 @@
           <div class="col-sm-10">
               <h1>Recipes</h1>
               <hr><br><br>
-              <button type="button" class="btn btn-success btn-sm"> Add Recipe</button>
+              <button type="button" class="btn btn-success btn-sm">See List</button>
               <br><br>
               <table class="table table-hover">
                   <thead>
@@ -17,8 +17,8 @@
                   </thead>
                   <tbody>
                       <tr v-for="(recipe,index) in recipes" :key="index">
-                          <td>{{recipe.Name}}</td>
-                          <td>{{recipe.Category}}</td>
+                          <td>{{recipe.title}}</td>
+                          <td>{{recipe.category}}</td>
                           <td>
                               <span v-if="recipe.added">Yes</span>
                               <span v-else>No</span>
@@ -26,7 +26,7 @@
                           <td>
                               <div class="btn-group" role="group">
                                 <button type="button" class="btn-warning btn-sm">Recipe</button>
-                                <button type="button" class="btn btn-danger btn-sm">Add</button>
+                                <button type="button" class="btn btn-danger btn-sm">Add to List</button>
                               </div>
                           </td>
                       </tr>
