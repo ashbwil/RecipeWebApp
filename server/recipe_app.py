@@ -22,12 +22,20 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 
 # sanity check route
-@app.route('/recipes', methods=['GET'])
+@app.route('/recipes', methods=['GET', 'POST'])
 def recipes_main():
-    return jsonify({
-        'status': 'success',
-        'recipes': RECIPES
-    })
+    response_object = {'status': 'success'}
+    if request.method =='POST':
+        post_data = request.get_json()
+        RECIPES.append({
+            'title': post_data.get('title'),
+            'category': post_data.get('category'),
+            'added': post_data.get('read')
+        })
+        response_object['message'] = 'Recipe added!'
+    else:
+        response_object['recipes'] = RECIPES
+    return jsonify(response_object)
 
 
 
