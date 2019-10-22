@@ -31,7 +31,7 @@
                                 <button type="button" class="btn btn-warning btn-sm" v-b-modal.recipe-update-modal @click="editRecipe(recipe)">Edit</button>
                                 <button type="button" class="btn btn-success btn-sm">Add to List</button>
                                 <button type="button" class="btn btn-warning btn-sm">Recipe</button>
-                                <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                <button type="button" class="btn btn-danger btn-sm" @click="onDeleteRecipe(recipe)">Delete</button>
                               </div>
                           </td>
                       </tr>
@@ -139,6 +139,22 @@ export default {
   },
 
   methods: {
+    removeRecipe(recipeID){
+      const path = `http://localhost:5000/recipes/${recipeID}`;
+      axios.delete(path)
+        .then(()=>{
+          this.getRecipes();
+          this.message = 'Recipe Removed From Database';
+          this.showMessage = true;
+        })
+        .catch((error) =>{
+          console.error(error);
+          this.getRecipes();
+        });
+    },
+    onDeleteRecipe(recipe){
+      this.removeRecipe(recipe.id);
+    },
     updateRecipe(payload, recipeID){
       const path = `http://localhost:5000/recipes/${recipeID}`;
       axios.put(path, payload)

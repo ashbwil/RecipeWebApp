@@ -41,7 +41,7 @@ def recipes_main():
     return jsonify(response_object)
 
 
-@app.route('/recipes/<recipe_id>', methods=['PUT'])
+@app.route('/recipes/<recipe_id>', methods=['PUT', 'DELETE'])
 def single_recipe(recipe_id):
     response_object = {'status': 'success'}
     if request.method == 'PUT':
@@ -55,8 +55,9 @@ def single_recipe(recipe_id):
                 'added': post_data.get('added')
             })
             response_object['message'] = 'Recipe Edited!'
-        else:
-            response_object['message'] = 'Error deleting recipe'
+    if request.method == 'DELETE':
+        remove_recipe(recipe_id)
+        response_object['message'] = 'Recipe Removed From Database'
     return jsonify(response_object)
 
 
