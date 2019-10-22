@@ -6,12 +6,16 @@ import uuid
 # configuration
 DEBUG = True
 
+LIST = []
+
 RECIPES = [
     {
         'id': uuid.uuid4().hex,
-        'title': 'Chilli',
-        'category': 'Dinner',
-        'added': True
+        'title': 'Chili',
+        'category': 'Homecooked',
+        'meal': 'Dinner',
+        'added': False,
+        'ingredients': ['Hamburger Meat', 'Onion', 'Taco Seasoning', 'Chili Tomatoes']
     }
 ]
 
@@ -33,7 +37,9 @@ def recipes_main():
             'id': uuid.uuid4().hex,
             'title': post_data.get('title'),
             'category': post_data.get('category'),
-            'added': post_data.get('added')
+            'meal': post_data.get('meal'),
+            'added': post_data.get('added'),
+            'ingredients': post_data.get('ingredients')
         })
         response_object['message'] = 'Recipe added!'
     else:
@@ -52,7 +58,9 @@ def single_recipe(recipe_id):
                 'id': uuid.uuid4().hex,
                 'title': post_data.get('title'),
                 'category': post_data.get('category'),
-                'added': post_data.get('added')
+                'meal': post_data.get('meal'),
+                'added': post_data.get('added'),
+                'ingredients': post_data.get('ingredients')
             })
             response_object['message'] = 'Recipe Edited!'
     if request.method == 'DELETE':

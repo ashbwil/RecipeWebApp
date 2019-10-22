@@ -5,16 +5,17 @@
               <h1>Recipes</h1>
               <hr><br>
               <alert :message=message v-if="showMessage"></alert>
-              <button type="button" class="btn btn-success btn-sm">See List</button>
+              <button type="button" class="btn btn-info btn-sm">See List</button>
               <br><br>
-              <button type="button" class="btn btn-success btn-sm" v-b-modal.recipe-modal>Add New Recipe</button>
+              <button type="button" class="btn btn-info btn-sm" v-b-modal.recipe-modal>Add New Recipe</button>
               <br><br>
               <table class="table table-hover">
                   <thead>
                       <tr>
                           <th scope="col">Name</th>
                           <th scope="col">Category</th>
-                          <th scope="col">Added?</th>
+                          <th scope="col">Meal</th>
+                          <th scope="col">Added to list?</th>
                           <th></th>
                       </tr>
                   </thead>
@@ -22,16 +23,17 @@
                       <tr v-for="(recipe,index) in recipes" :key="index">
                           <td>{{recipe.title}}</td>
                           <td>{{recipe.category}}</td>
+                          <td>{{recipe.meal}}</td>
                           <td>
                               <span v-if="recipe.added">Yes</span>
                               <span v-else>No</span>
                           </td>
                           <td>
                               <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-warning btn-sm" v-b-modal.recipe-update-modal @click="editRecipe(recipe)">Edit</button>
-                                <button type="button" class="btn btn-success btn-sm">Add to List</button>
-                                <button type="button" class="btn btn-warning btn-sm">Recipe</button>
-                                <button type="button" class="btn btn-danger btn-sm" @click="onDeleteRecipe(recipe)">Delete</button>
+                                <button type="button" class="btn btn-primary btn-sm" v-b-modal.recipe-update-modal @click="editRecipe(recipe)">Edit</button>
+                                <button type="button" class="btn btn-info btn-sm">Add to List</button>
+                                <button type="button" class="btn btn-primary btn-sm">Recipe</button>
+                                <button type="button" class="btn btn-info btn-sm" @click="onDeleteRecipe(recipe)">Delete</button>
                               </div>
                           </td>
                       </tr>
@@ -64,11 +66,16 @@
                         placeholder="Enter Category">
           </b-form-input>
     </b-form-group>
-    <b-form-group id="form-added-group">
-      <b-form-checkbox-group v-model="addRecipeForm.added" id="form-checks">
-        <b-form-checkbox value="true"> Added?</b-form-checkbox>
-      </b-form-checkbox-group>
-    </b-form-group>
+        <b-form-group id="form-meal-group"
+                  label="Meal:"
+                  label-for="form-meal-input">
+          <b-form-input id="form-meal-input"
+                        type="text"
+                        v-model="addRecipeForm.meal"
+                        required
+                        placeholder="Enter which meal this is typically eaten at">
+          </b-form-input>
+        </b-form-group>
     <b-button type="submit" variant="primary">Submit</b-button>
     </b-form>
   </b-modal>
@@ -97,10 +104,15 @@
                     placeholder="Enter Category">
       </b-form-input>
     </b-form-group>
-    <b-form-group id="form-added-edit-group">
-      <b-form-checkbox-group v-model="editForm.added" id="form-checks">
-        <b-form-checkbox value="true"> Added?</b-form-checkbox>
-      </b-form-checkbox-group>
+        <b-form-group id="form-meal-edit-group"
+                  label="Meal:"
+                  label-for="form-meal-edit-input">
+      <b-form-input id="form-meal-edit-input"
+                    type="text"
+                    v-model="editForm.meal"
+                    required
+                    placeholder="Enter what meal this would typically be eaten at">
+      </b-form-input>
     </b-form-group>
     <b-button-group>
       <b-button type="submit" variant="primary">Update</b-button>
@@ -122,12 +134,14 @@ export default {
       addRecipeForm:{
         title: '',
         category:'',
+        meal: '',
         added: [],
       },
       editForm:{
       id: '',
       title: '',
       category:'',
+      meal: '',
       added: [],
     },
       message: '',
@@ -188,6 +202,7 @@ export default {
       const payload = {
         title: this.editForm.title,
         category: this.editForm.category,
+        meal: this.editForm.meal,
         added,
       };
       this.updateRecipe(payload, this.editForm.id);
@@ -222,10 +237,12 @@ export default {
     initForm(){
       this.addRecipeForm.title = '';
       this.addRecipeForm.category = '';
+      this.addRecipeForm.meal ='',
       this.addRecipeForm.added = [];
       this.editForm.id ='';
       this.editForm.title = '';
-      this.editForm.Category='';
+      this.editForm.category='';
+      this.editForm.meal='';
       this.editForm.added = [];
     },
 
@@ -238,6 +255,7 @@ export default {
       const payload = {
         title: this.addRecipeForm.title,
         category: this.addRecipeForm.category,
+        meal: this.addRecipeForm.meal,
         added, //property shorthand
       };
           this.addRecipe(payload);
