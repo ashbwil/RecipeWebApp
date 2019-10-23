@@ -5,7 +5,7 @@
               <h1>Recipes</h1>
               <hr><br>
               <alert :message=message v-if="showMessage"></alert>
-              <button type="button" class="btn btn-info btn-sm">See List</button>
+              <button type="button" class="btn btn-info btn-sm" v-b-modal.list-modal>See List</button>
               <br><br>
               <button type="button" class="btn btn-info btn-sm" v-b-modal.recipe-modal>Add New Recipe</button>
               <br><br>
@@ -31,7 +31,7 @@
                           <td>
                               <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-primary btn-sm" v-b-modal.recipe-update-modal @click="editRecipe(recipe)">Edit</button>
-                                <button type="button" class="btn btn-info btn-sm">Add to List</button>
+                                <button type="button" class="btn btn-info btn-sm"  @click="addToListYesNo(recipe)">Add to List</button>
                                 <button type="button" class="btn btn-primary btn-sm">Recipe</button>
                                 <button type="button" class="btn btn-info btn-sm" @click="onDeleteRecipe(recipe)">Delete</button>
                               </div>
@@ -120,6 +120,20 @@
     </b-button-group>
     </b-form>
   </b-modal>
+  <b-modal ref="listModal"
+           id="list-modal"
+           title="LIST"
+           hide-footer>
+    <b-form>
+      <b-form-group id="form-recipes-group"
+                    label="Recipes:">
+      </b-form-group>
+      <b-form-group id="form-ingredients-group"
+                    label="Ingredients:">
+      </b-form-group>
+    </b-form>
+  </b-modal>
+
   </div>
   </template>
 
@@ -153,6 +167,9 @@ export default {
   },
 
   methods: {
+    addToListYesNo(recipe){
+      recipe.added = true;
+    },
     removeRecipe(recipeID){
       const path = `http://localhost:5000/recipes/${recipeID}`;
       axios.delete(path)
@@ -237,8 +254,7 @@ export default {
     initForm(){
       this.addRecipeForm.title = '';
       this.addRecipeForm.category = '';
-      this.addRecipeForm.meal ='',
-      this.addRecipeForm.added = [];
+      this.addRecipeForm.meal ='';
       this.editForm.id ='';
       this.editForm.title = '';
       this.editForm.category='';
@@ -255,8 +271,7 @@ export default {
       const payload = {
         title: this.addRecipeForm.title,
         category: this.addRecipeForm.category,
-        meal: this.addRecipeForm.meal,
-        added, //property shorthand
+        meal: this.addRecipeForm.meal
       };
           this.addRecipe(payload);
           this.initForm();
