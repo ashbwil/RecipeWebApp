@@ -5,7 +5,7 @@
               <h1>Recipes</h1>
               <hr><br>
               <alert :message=message v-if="showMessage"></alert>
-              <button type="button" class="btn btn-info btn-sm" v-b-modal.list-modal>See List</button>
+              <button type="button" class="btn btn-info btn-sm" v-b-modal.list-modal @click="getIngredients()">See List</button>
               <br><br>
               <button type="button" class="btn btn-info btn-sm" v-b-modal.recipe-modal>Add New Recipe</button>
               <br><br>
@@ -130,19 +130,22 @@
       </b-form-group>
       <b-form-group id="form-ingredients-group"
                     label="Ingredients:">
+                    <p>{{ingredients}}</p>
       </b-form-group>
     </b-form>
   </b-modal>
   </div>
   </template>
-
 <script>
+
+
 import axios from 'axios';
 import Alert from './Alert.vue';
 
 export default {
   data() {
     return {
+      ingredients:[],
       recipes: [],
       addRecipeForm:{
         title: '',
@@ -170,7 +173,8 @@ export default {
       const path = 'http://localhost:5000/ingredients';
       axios.get(path)
         .then((res) => {
-          this.ingredients = res.data.ingredients;
+          this.ingredients = res.data.ingredient_list;
+          console.log(this.ingredients)
         })
         .catch((error) => {
           // eslint-disable-next-line

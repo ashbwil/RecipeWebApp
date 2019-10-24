@@ -2,24 +2,23 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import uuid
 
-
 # configuration
 DEBUG = True
 
-#Final Grocery List
+# Final Grocery List
 LIST = []
 
-#Recipes Added to grocery list
+# Recipes Added to grocery list
 ADDEDRECIPES = []
 
-#List of Dictionaries holding recipe info
+# List of Dictionaries holding recipe info
 RECIPES = [
     {
         'id': uuid.uuid4().hex,
         'title': 'Chili',
         'category': 'Homecooked',
         'meal': 'Dinner',
-        'added': True,
+        'added': False,
         'ingredients': ['Hamburger Meat', 'Onion', 'Taco Seasoning', 'Chili Tomatoes']
     }
 ]
@@ -32,7 +31,7 @@ app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 
-#app route to main page
+# app route to main page
 @app.route('/recipes', methods=['GET', 'POST'])
 def recipes_main():
     response_object = {'status': 'success'}
@@ -73,9 +72,11 @@ def single_recipe(recipe_id):
         response_object['message'] = 'Recipe Removed From Database'
     return jsonify(response_object)
 
+
 @app.route('/ingredients', methods=['GET'])
 def send_ingredients():
     add_to_list()
+    print(LIST)
     response_object = {'ingredient_list': LIST}
     return jsonify(response_object)
 
@@ -87,13 +88,11 @@ def remove_recipe(recipe_id):
             return True
     return False
 
+
 def add_to_list():
     for recipe in RECIPES:
         if recipe['added']:
             LIST.extend(recipe['ingredients'])
-
-
-print(LIST)
 
 
 
