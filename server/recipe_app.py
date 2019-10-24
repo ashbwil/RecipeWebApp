@@ -6,8 +6,13 @@ import uuid
 # configuration
 DEBUG = True
 
+#Final Grocery List
 LIST = []
 
+#Recipes Added to grocery list
+ADDEDRECIPES = []
+
+#List of Dictionaries holding recipe info
 RECIPES = [
     {
         'id': uuid.uuid4().hex,
@@ -27,11 +32,11 @@ app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 
-# sanity check route
+#app route to main page
 @app.route('/recipes', methods=['GET', 'POST'])
 def recipes_main():
     response_object = {'status': 'success'}
-    if request.method =='POST':
+    if request.method == 'POST':
         post_data = request.get_json()
         RECIPES.append({
             'id': uuid.uuid4().hex,
@@ -68,6 +73,11 @@ def single_recipe(recipe_id):
         response_object['message'] = 'Recipe Removed From Database'
     return jsonify(response_object)
 
+@app.route('/ingredients', methods=['GET'])
+def send_ingredients():
+    response_object = {'ingredient_list': LIST}
+    return jsonify(response_object)
+
 
 def remove_recipe(recipe_id):
     for recipe in RECIPES:
@@ -75,6 +85,17 @@ def remove_recipe(recipe_id):
             RECIPES.remove(recipe)
             return True
     return False
+
+def add_to_list():
+    for recipe in RECIPES:
+        if recipe['added']:
+            LIST.extend(recipe['ingredients'])
+
+
+add_to_list()
+print(LIST)
+
+
 
 
 if __name__ == '__main__':
