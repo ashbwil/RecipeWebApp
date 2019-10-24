@@ -166,6 +166,17 @@ export default {
   },
 
   methods: {
+    getIngredients() {
+      const path = 'http://localhost:5000/ingredients';
+      axios.get(path)
+        .then((res) => {
+          this.ingredients = res.data.ingredients;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
     addToListYesNo(recipe){
       recipe.added = true;
     },

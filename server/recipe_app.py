@@ -19,7 +19,7 @@ RECIPES = [
         'title': 'Chili',
         'category': 'Homecooked',
         'meal': 'Dinner',
-        'added': False,
+        'added': True,
         'ingredients': ['Hamburger Meat', 'Onion', 'Taco Seasoning', 'Chili Tomatoes']
     }
 ]
@@ -75,6 +75,7 @@ def single_recipe(recipe_id):
 
 @app.route('/ingredients', methods=['GET'])
 def send_ingredients():
+    add_to_list()
     response_object = {'ingredient_list': LIST}
     return jsonify(response_object)
 
@@ -92,7 +93,6 @@ def add_to_list():
             LIST.extend(recipe['ingredients'])
 
 
-add_to_list()
 print(LIST)
 
 
