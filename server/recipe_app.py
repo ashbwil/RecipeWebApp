@@ -20,6 +20,14 @@ RECIPES = [
         'meal': 'Dinner',
         'added': False,
         'ingredients': ['Hamburger Meat', 'Onion', 'Taco Seasoning', 'Chili Tomatoes']
+    },
+    {
+        'id': uuid.uuid4().hex,
+        'title': 'Tacos',
+        'category': 'Mexican',
+        'meal': 'Dinner',
+        'added': False,
+        'ingredients': ['Tortillas', 'Onion', 'Tomato', 'Taco Seasoning', 'Hamburger Meat', 'Shredded Cheese']
     }
 ]
 
@@ -81,6 +89,14 @@ def send_ingredients():
     return jsonify(response_object)
 
 
+@app.route('/recipelist', methods=['GET'])
+def send_recipes():
+    add_to_recipe_list()
+    print(ADDEDRECIPES)
+    response_object = {'added_recipes': ADDEDRECIPES}
+    return jsonify(response_object)
+
+
 def remove_recipe(recipe_id):
     for recipe in RECIPES:
         if recipe['id'] == recipe_id:
@@ -94,6 +110,11 @@ def add_to_list():
         if recipe['added']:
             LIST.extend(recipe['ingredients'])
 
+
+def add_to_recipe_list():
+    for recipe in RECIPES:
+        if recipe['added']:
+            ADDEDRECIPES.append(recipe['title'])
 
 
 

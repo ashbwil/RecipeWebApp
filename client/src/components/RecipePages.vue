@@ -5,7 +5,7 @@
               <h1>Recipes</h1>
               <hr><br>
               <alert :message=message v-if="showMessage"></alert>
-              <button type="button" class="btn btn-info btn-sm" v-b-modal.list-modal @click="getIngredients()">See List</button>
+              <button type="button" class="btn btn-info btn-sm" v-b-modal.list-modal @click="listButton()">See List</button>
               <br><br>
               <button type="button" class="btn btn-info btn-sm" v-b-modal.recipe-modal>Add New Recipe</button>
               <br><br>
@@ -31,7 +31,8 @@
                           <td>
                               <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-primary btn-sm" v-b-modal.recipe-update-modal @click="editRecipe(recipe)">Edit</button>
-                                <button type="button" class="btn btn-info btn-sm"  @click="addToListYesNo(recipe)">Add to List</button>
+                                <button type="button" class="btn btn-info btn-sm"  @click="addToListYesNo(recipe)" v-show="!recipe.added">Add to List</button>
+                                <button type="button" class="btn btn-info btn-sm"  @click="addToListYesNo(recipe)" v-show="recipe.added">Remove from List</button>
                                 <button type="button" class="btn btn-primary btn-sm">Recipe</button>
                                 <button type="button" class="btn btn-info btn-sm" @click="onDeleteRecipe(recipe)">Delete</button>
                               </div>
@@ -127,6 +128,7 @@
     <b-form>
       <b-form-group id="form-recipes-group"
                     label="Recipes:">
+                    <p>{{addedRecipes}}</p>
       </b-form-group>
       <b-form-group id="form-ingredients-group"
                     label="Ingredients:">
@@ -145,21 +147,22 @@ import Alert from './Alert.vue';
 export default {
   data() {
     return {
+      addedRecipes:[],
       ingredients:[],
       recipes: [],
       addRecipeForm:{
         title: '',
         category:'',
         meal: '',
-        added: [],
+        added: false,
       },
       editForm:{
-      id: '',
-      title: '',
-      category:'',
-      meal: '',
-      added: [],
-    },
+        id: '',
+        title: '',
+        category:'',
+        meal: '',
+        added: false,
+      },
       message: '',
       showMessage: false,
     };
@@ -169,6 +172,21 @@ export default {
   },
 
   methods: {
+      listButton(){
+        this.getAddedRecipes(),
+        this.getIngredients()
+      },
+      getAddedRecipes() {
+      const path = 'http://localhost:5000/recipelist';
+      axios.get(path)
+        .then((res) => {
+          this.addedRecipes = res.data.added_recipes;
+          console.log(this.addedRecipes)
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
     getIngredients() {
       const path = 'http://localhost:5000/ingredients';
       axios.get(path)
@@ -182,7 +200,9 @@ export default {
         });
     },
     addToListYesNo(recipe){
-      recipe.added = true;
+      recipe.added = !recipe.added;
+      this.updateRecipe(recipe, recipe.id)
+      
     },
     removeRecipe(recipeID){
       const path = `http://localhost:5000/recipes/${recipeID}`;
@@ -204,9 +224,8 @@ export default {
       const path = `http://localhost:5000/recipes/${recipeID}`;
       axios.put(path, payload)
         .then((response)=>{
-          this.getRecipes();
-          this.message = response.data.message;
-          this.showMessage = true;
+          //this.getRecipes();
+          this.showMessage = false;
         })
         .catch((error) => {
           console.error(error)
