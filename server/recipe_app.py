@@ -6,30 +6,28 @@ import uuid
 DEBUG = True
 
 # Final Grocery List
-LIST = []
+grocery_list = []
 
 # Recipes Added to grocery list
 ADDEDRECIPES = []
 
-# List of Dictionaries holding recipe info
-RECIPES = [
-    {
-        'id': uuid.uuid4().hex,
+recipe_dict = {}
+
+recipe_dict[uuid.uuid4().hex] = {
         'title': 'Chili',
         'category': 'Homecooked',
         'meal': 'Dinner',
         'added': False,
         'ingredients': ['Hamburger Meat', 'Onion', 'Taco Seasoning', 'Chili Tomatoes']
-    },
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'Tacos',
-        'category': 'Mexican',
-        'meal': 'Dinner',
-        'added': False,
-        'ingredients': ['Tortillas', 'Onion', 'Tomato', 'Taco Seasoning', 'Hamburger Meat', 'Shredded Cheese']
-    }
-]
+}
+
+recipe_dict[uuid.uuid4().hex] = {
+    'title': 'Tacos',
+    'category': 'Mexican',
+    'meal': 'Dinner',
+    'added': False,
+    'ingredients': ['Tortillas', 'Onion', 'Tomato', 'Taco Seasoning', 'Hamburger Meat', 'Shredded Cheese']
+}
 
 # instantiate the app
 app = Flask(__name__)
@@ -45,17 +43,21 @@ def recipes_main():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
-        RECIPES.append({
-            'id': uuid.uuid4().hex,
+        recipe_dict[uuid.uuid4().hex] = {
             'title': post_data.get('title'),
             'category': post_data.get('category'),
             'meal': post_data.get('meal'),
             'added': post_data.get('added'),
             'ingredients': post_data.get('ingredients')
-        })
+        }
         response_object['message'] = 'Recipe added!'
     else:
-        response_object['recipes'] = RECIPES
+        # For each recipe, add the key (uuid) as a field alongside the others so js can use it as a key
+        recipe_list = []
+        for recipe_id, recipe in recipe_dict.items():
+            recipe['id'] = recipe_id
+            recipe_list.append(recipe)
+        response_object['recipes'] = recipe_list
     return jsonify(response_object)
 
 
@@ -64,17 +66,10 @@ def single_recipe(recipe_id):
     response_object = {'status': 'success'}
     if request.method == 'PUT':
         post_data = request.get_json()
-        remove_success = remove_recipe(recipe_id)
-        if remove_success:
-            RECIPES.append({
-                'id': uuid.uuid4().hex,
-                'title': post_data.get('title'),
-                'category': post_data.get('category'),
-                'meal': post_data.get('meal'),
-                'added': post_data.get('added'),
-                'ingredients': post_data.get('ingredients')
-            })
-            response_object['message'] = 'Recipe Edited!'
+        recipe = recipe_dict[recipe_id]
+        for element in recipe.keys():
+            recipe[element] = post_data.get(element)
+        response_object['message'] = 'Recipe Edited!'
     if request.method == 'DELETE':
         remove_recipe(recipe_id)
         response_object['message'] = 'Recipe Removed From Database'
@@ -83,38 +78,52 @@ def single_recipe(recipe_id):
 
 @app.route('/ingredients', methods=['GET'])
 def send_ingredients():
-    add_to_list()
-    print(LIST)
-    response_object = {'ingredient_list': LIST}
+    print(grocery_list)
+    response_object = {'ingredient_list': grocery_list}
     return jsonify(response_object)
 
 
 @app.route('/recipelist', methods=['GET'])
 def send_recipes():
-    add_to_recipe_list()
     print(ADDEDRECIPES)
     response_object = {'added_recipes': ADDEDRECIPES}
     return jsonify(response_object)
 
 
+@app.route('/addtolist/<recipe_id>', methods=['POST'])
+def add_to_recipe_list(recipe_id):
+    response_object = {'success': True, "error": None}
+    # Lookup the id in the dictionary and add the ingredients to the ingredients list
+    if recipe_id in recipe_dict.keys():
+        recipe = recipe_dict[recipe_id]
+        ADDEDRECIPES.append(recipe['title'])
+        grocery_list.extend(recipe['ingredients'])
+        return jsonify(response_object)
+    response_object['success'] = False
+    response_object['error'] = "No recipe id matched. Id: " + recipe_id
+    return jsonify(response_object)
+
+
+@app.route('/removefromlist/<recipe_id>', methods=['POST'])
+def remove_from_recipe_list(recipe_id):
+    response_object = {'success': True, "error": None}
+    if recipe_id in recipe_dict.keys():
+        recipe = recipe_dict[recipe_id]
+        ADDEDRECIPES.remove(recipe['title'])
+        for ingredient in recipe['ingredients']:
+            grocery_list.remove(ingredient)
+        return jsonify(response_object)
+    response_object['success'] = False
+    response_object['error'] = "No recipe id matched. Id: " + recipe_id
+    return jsonify(response_object)
+
+
 def remove_recipe(recipe_id):
-    for recipe in RECIPES:
-        if recipe['id'] == recipe_id:
-            RECIPES.remove(recipe)
-            return True
+    # TODO if its added to the ingredients list, also remove those ingredients
+    if recipe_id in recipe_dict.keys():
+        del recipe_dict[recipe_id]
+        return True
     return False
-
-
-def add_to_list():
-    for recipe in RECIPES:
-        if recipe['added']:
-            LIST.extend(recipe['ingredients'])
-
-
-def add_to_recipe_list():
-    for recipe in RECIPES:
-        if recipe['added']:
-            ADDEDRECIPES.append(recipe['title'])
 
 
 

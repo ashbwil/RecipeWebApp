@@ -31,8 +31,8 @@
                           <td>
                               <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-primary btn-sm" v-b-modal.recipe-update-modal @click="editRecipe(recipe)">Edit</button>
-                                <button type="button" class="btn btn-info btn-sm"  @click="addToListYesNo(recipe)" v-show="!recipe.added">Add to List</button>
-                                <button type="button" class="btn btn-info btn-sm"  @click="addToListYesNo(recipe)" v-show="recipe.added">Remove from List</button>
+                                <button type="button" class="btn btn-info btn-sm"  @click="addToListYes(recipe)" v-show="!recipe.added">Add to List</button>
+                                <button type="button" class="btn btn-info btn-sm"  @click="addToListNo(recipe)" v-show="recipe.added">Remove from List</button>
                                 <button type="button" class="btn btn-primary btn-sm">Recipe</button>
                                 <button type="button" class="btn btn-info btn-sm" @click="onDeleteRecipe(recipe)">Delete</button>
                               </div>
@@ -125,7 +125,7 @@
            id="list-modal"
            title="LIST"
            hide-footer>
-    <b-form>
+    <!-- <b-form>
       <b-form-group id="form-recipes-group"
                     label="Recipes:">
                     <p>{{addedRecipes}}</p>
@@ -134,13 +134,21 @@
                     label="Ingredients:">
                     <p>{{ingredients}}</p>
       </b-form-group>
-    </b-form>
+      <b-button type="cancel" variant="primary">OK</b-button>
+    </b-form> -->
+      <b-card id="form-recipes-group"
+                    title="Recipes:">
+                    <p>{{addedRecipes}}</p>
+      </b-card>
+      <b-card id="form-ingredients-group"
+                    title="Ingredients:">
+                    <p>{{ingredients}}</p>
+      </b-card>
   </b-modal>
   </div>
-  </template>
+</template>
+
 <script>
-
-
 import axios from 'axios';
 import Alert from './Alert.vue';
 
@@ -172,20 +180,28 @@ export default {
   },
 
   methods: {
-      listButton(){
-        this.getAddedRecipes(),
-        this.getIngredients()
-      },
-      getAddedRecipes() {
-      const path = 'http://localhost:5000/recipelist';
-      axios.get(path)
-        .then((res) => {
-          this.addedRecipes = res.data.added_recipes;
-          console.log(this.addedRecipes)
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    listButton(){
+      this.getAddedRecipes(),
+      this.getIngredients()
+    },
+    removeFromList(recipeID){
+      const path = `http://localhost:5000/removefromlist/${recipeID}`
+      axios.post(path)
+    },
+    updateList(recipeID){
+      const path = `http://localhost:5000/addtolist/${recipeID}`
+      axios.post(path)
+    },
+    getAddedRecipes() {
+    const path = 'http://localhost:5000/recipelist';
+    axios.get(path)
+      .then((res) => {
+        this.addedRecipes = res.data.added_recipes;
+        console.log(this.addedRecipes)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     },
     getIngredients() {
       const path = 'http://localhost:5000/ingredients';
@@ -199,10 +215,14 @@ export default {
           console.error(error);
         });
     },
-    addToListYesNo(recipe){
-      recipe.added = !recipe.added;
-      this.updateRecipe(recipe, recipe.id)
-      
+    addToListYes(recipe){
+      recipe.added = true;
+      this.updateList(recipe.id)
+    },
+    addToListNo(recipe){
+      recipe.added = false;
+      console.log('removing', recipe.id, 'from list')
+      this.removeFromList(recipe.id) 
     },
     removeRecipe(recipeID){
       const path = `http://localhost:5000/recipes/${recipeID}`;
@@ -224,7 +244,7 @@ export default {
       const path = `http://localhost:5000/recipes/${recipeID}`;
       axios.put(path, payload)
         .then((response)=>{
-          //this.getRecipes();
+          this.getRecipes();
           this.showMessage = false;
         })
         .catch((error) => {
