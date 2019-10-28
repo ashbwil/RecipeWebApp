@@ -1,3 +1,4 @@
+// HTML
 <template>
   <div class="container">
       <div class="row">
@@ -125,17 +126,6 @@
            id="list-modal"
            title="LIST"
            hide-footer>
-    <!-- <b-form>
-      <b-form-group id="form-recipes-group"
-                    label="Recipes:">
-                    <p>{{addedRecipes}}</p>
-      </b-form-group>
-      <b-form-group id="form-ingredients-group"
-                    label="Ingredients:">
-                    <p>{{ingredients}}</p>
-      </b-form-group>
-      <b-button type="cancel" variant="primary">OK</b-button>
-    </b-form> -->
       <b-card id="form-recipes-group"
                     title="Recipes:">
                     <p>{{addedRecipes}}</p>
@@ -148,6 +138,7 @@
   </div>
 </template>
 
+// Javascript
 <script>
 import axios from 'axios';
 import Alert from './Alert.vue';
@@ -343,3 +334,21 @@ export default {
   },
 };
 </script>
+
+// CSS
+<style scoped>
+.btn-info{
+  background-color: rgb(236, 14, 162);
+  border-color: rgb(236, 14, 162);
+}
+.btn-primary{
+  background-color:rgb(230, 134, 198);
+  border-color: rgb(230, 134, 198);
+
+}
+.btn-danger{
+  background-color: blueviolet;
+  border-color: blueviolet;
+}
+
+</style>

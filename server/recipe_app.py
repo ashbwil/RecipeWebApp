@@ -37,7 +37,7 @@ app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 
-# app route to main page
+# app route to send new and existing recipes
 @app.route('/recipes', methods=['GET', 'POST'])
 def recipes_main():
     response_object = {'status': 'success'}
@@ -60,7 +60,7 @@ def recipes_main():
         response_object['recipes'] = recipe_list
     return jsonify(response_object)
 
-
+#Edits and deletes recipes
 @app.route('/recipes/<recipe_id>', methods=['PUT', 'DELETE'])
 def single_recipe(recipe_id):
     response_object = {'status': 'success'}
@@ -75,21 +75,21 @@ def single_recipe(recipe_id):
         response_object['message'] = 'Recipe Removed From Database'
     return jsonify(response_object)
 
-
+#Sends the ingredient list to vue
 @app.route('/ingredients', methods=['GET'])
 def send_ingredients():
     print(grocery_list)
     response_object = {'ingredient_list': grocery_list}
     return jsonify(response_object)
 
-
+#Sends the list of recipes to vue
 @app.route('/recipelist', methods=['GET'])
 def send_recipes():
     print(ADDEDRECIPES)
     response_object = {'added_recipes': ADDEDRECIPES}
     return jsonify(response_object)
 
-
+#adds the ingredients and the recipes to main list
 @app.route('/addtolist/<recipe_id>', methods=['POST'])
 def add_to_recipe_list(recipe_id):
     response_object = {'success': True, "error": None}
@@ -103,7 +103,7 @@ def add_to_recipe_list(recipe_id):
     response_object['error'] = "No recipe id matched. Id: " + recipe_id
     return jsonify(response_object)
 
-
+#removes things from main list
 @app.route('/removefromlist/<recipe_id>', methods=['POST'])
 def remove_from_recipe_list(recipe_id):
     response_object = {'success': True, "error": None}
@@ -118,6 +118,7 @@ def remove_from_recipe_list(recipe_id):
     return jsonify(response_object)
 
 
+#Removes entire recipe dict
 def remove_recipe(recipe_id):
     # TODO if its added to the ingredients list, also remove those ingredients
     if recipe_id in recipe_dict.keys():
