@@ -18,15 +18,20 @@ recipe_dict[uuid.uuid4().hex] = {
         'category': 'Homecooked',
         'meal': 'Dinner',
         'added': False,
-        'ingredients': ['Hamburger Meat', 'Onion', 'Taco Seasoning', 'Chili Tomatoes']
+        'ingredients': ['Hamburger Meat', 'Onion', 'Taco Seasoning', 'Chili Tomatoes', 'Macaroni noodles',
+                        'Saltine Crackers'],
+        'directions': """Cook hamburger meat thoroughly and drain. Chop and saute onions, 
+                        add onion, taco seasoning and chili tomatoes to pot with meat. 
+                        Cook pasta according to directions on box."""
 }
 
 recipe_dict[uuid.uuid4().hex] = {
-    'title': 'Tacos',
-    'category': 'Mexican',
-    'meal': 'Dinner',
-    'added': False,
-    'ingredients': ['Tortillas', 'Onion', 'Tomato', 'Taco Seasoning', 'Hamburger Meat', 'Shredded Cheese']
+        'title': 'Tacos',
+        'category': 'Mexican',
+        'meal': 'Dinner',
+        'added': False,
+        'ingredients': ['Tortillas', 'Onion', 'Tomato', 'Taco Seasoning', 'Hamburger Meat', 'Shredded Cheese', 'salsa'],
+        'directions': """Cook hamburger meat, and chop vegetables to bite-sized. Drain meat and add taco seasoning. Warm tortillas in microwave."""
 }
 
 # instantiate the app
@@ -48,7 +53,8 @@ def recipes_main():
             'category': post_data.get('category'),
             'meal': post_data.get('meal'),
             'added': post_data.get('added'),
-            'ingredients': post_data.get('ingredients')
+            'ingredients': post_data.get('ingredients'),
+            'directions': post_data.get('directions')
         }
         response_object['message'] = 'Recipe added!'
     else:
@@ -125,6 +131,7 @@ def remove_recipe(recipe_id):
         del recipe_dict[recipe_id]
         return True
     return False
+
 
 
 

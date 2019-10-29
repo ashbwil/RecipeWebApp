@@ -34,7 +34,7 @@
                                 <button type="button" class="btn btn-primary btn-sm" v-b-modal.recipe-update-modal @click="editRecipe(recipe)">Edit</button>
                                 <button type="button" class="btn btn-info btn-sm"  @click="addToListYes(recipe)" v-show="!recipe.added">Add to List</button>
                                 <button type="button" class="btn btn-info btn-sm"  @click="addToListNo(recipe)" v-show="recipe.added">Remove from List</button>
-                                <button type="button" class="btn btn-primary btn-sm">Recipe</button>
+                                <button type="button" class="btn btn-primary btn-sm" v-b-modal.direction-modal>Recipe</button>
                                 <button type="button" class="btn btn-info btn-sm" @click="onDeleteRecipe(recipe)">Delete</button>
                               </div>
                           </td>
@@ -135,6 +135,19 @@
                     <p>{{ingredients}}</p>
       </b-card>
   </b-modal>
+  <b-modal ref="directionsModal"
+           id="direction-modal"
+           title="Directions"
+           hide-footer>
+      <b-card id="form-ingredients-group"
+                    title="Ingredients:">
+                    <p></p>
+      </b-card>
+      <b-card id="form-directions-group"
+                    title="Directions:">
+                    <p></p>
+      </b-card>
+  </b-modal>
   </div>
 </template>
 
@@ -154,6 +167,7 @@ export default {
         category:'',
         meal: '',
         added: false,
+        directions:""
       },
       editForm:{
         id: '',
@@ -161,6 +175,7 @@ export default {
         category:'',
         meal: '',
         added: false,
+        directions: ""
       },
       message: '',
       showMessage: false,
