@@ -31,7 +31,9 @@ recipe_dict[uuid.uuid4().hex] = {
         'meal': 'Dinner',
         'added': False,
         'ingredients': ['Tortillas', 'Onion', 'Tomato', 'Taco Seasoning', 'Hamburger Meat', 'Shredded Cheese', 'salsa'],
-        'directions': """Cook hamburger meat, and chop vegetables to bite-sized. Drain meat and add taco seasoning. Warm tortillas in microwave."""
+        'directions': """Cook hamburger meat, and chop vegetables to bite-sized.
+                        Drain meat and add taco seasoning.
+                        Warm tortillas in microwave."""
 }
 
 # instantiate the app

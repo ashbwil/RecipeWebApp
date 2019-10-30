@@ -1,4 +1,3 @@
-// HTML
 <template>
   <div class="container">
       <div class="row">
@@ -34,7 +33,7 @@
                                 <button type="button" class="btn btn-primary btn-sm" v-b-modal.recipe-update-modal @click="editRecipe(recipe)">Edit</button>
                                 <button type="button" class="btn btn-info btn-sm"  @click="addToListYes(recipe)" v-show="!recipe.added">Add to List</button>
                                 <button type="button" class="btn btn-info btn-sm"  @click="addToListNo(recipe)" v-show="recipe.added">Remove from List</button>
-                                <button type="button" class="btn btn-primary btn-sm" v-b-modal.direction-modal>Recipe</button>
+                                <button type="button" class="btn btn-primary btn-sm" @click="showDirectionModal(recipe)">Recipe</button>
                                 <button type="button" class="btn btn-info btn-sm" @click="onDeleteRecipe(recipe)">Delete</button>
                               </div>
                           </td>
@@ -140,19 +139,22 @@
            title="Directions"
            hide-footer>
       <b-card id="form-ingredients-group"
-                    title="Ingredients:">
-                    <p></p>
+                    title="Ingredients:"
+                    v-if="selectedRecipe">
+                    <p>{{selectedRecipe.ingredients}}</p>
       </b-card>
       <b-card id="form-directions-group"
-                    title="Directions:">
-                    <p></p>
+                    title="Directions:"
+                    v-if="selectedRecipe">
+                    <p>{{selectedRecipe.directions}}</p>
       </b-card>
   </b-modal>
   </div>
 </template>
 
-// Javascript
+
 <script>
+/* eslint-disable */
 import axios from 'axios';
 import Alert from './Alert.vue';
 
@@ -161,21 +163,27 @@ export default {
     return {
       addedRecipes:[],
       ingredients:[],
-      recipes: [],
+      recipes: [{
+        title: '',
+        category:'',
+        meal:'',
+        added: false,
+        ingredients: '',
+        directions: '',
+      }],
       addRecipeForm:{
         title: '',
         category:'',
         meal: '',
         added: false,
-        directions:""
       },
+      selectedRecipe: null,
       editForm:{
         id: '',
         title: '',
         category:'',
         meal: '',
         added: false,
-        directions: ""
       },
       message: '',
       showMessage: false,
@@ -229,6 +237,10 @@ export default {
       recipe.added = false;
       console.log('removing', recipe.id, 'from list')
       this.removeFromList(recipe.id) 
+    },
+    showDirectionModal(recipe){
+      this.selectedRecipe = recipe;
+      this.$refs.directionsModal.show();
     },
     removeRecipe(recipeID){
       const path = `http://localhost:5000/recipes/${recipeID}`;
@@ -350,7 +362,7 @@ export default {
 };
 </script>
 
-// CSS
+
 <style scoped>
 .btn-info{
   background-color: rgb(236, 14, 162);
