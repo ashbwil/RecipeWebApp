@@ -77,6 +77,16 @@
                         placeholder="Enter which meal this is typically eaten at">
           </b-form-input>
         </b-form-group>
+       <b-form-group id="form-ingredient-group"
+                  label="Ingredients:"
+                  label-for="form-ingredients-input">
+          <b-form-input id="form-ingredients-input"
+                        type="text"
+                        v-model="addRecipeForm.ingredients"
+                        required
+                        placeholder="Enter Ingredients">
+          </b-form-input>
+    </b-form-group>
     <b-button type="submit" variant="primary">Submit</b-button>
     </b-form>
   </b-modal>
@@ -114,6 +124,16 @@
                     required
                     placeholder="Enter what meal this would typically be eaten at">
       </b-form-input>
+    </b-form-group>
+    <b-form-group id="form-ingredients-edit-group"
+                  label="Ingredients:"
+                  label-for="form-ingredients-edit-input">
+        <b-form-input id="form-ingredients-edit-input"
+                      type="text"
+                      v-model="editForm.ingredients"
+                      required
+                      placeholder="Enter Ingredients">
+        </b-form-input>
     </b-form-group>
     <b-button-group>
       <b-button type="submit" variant="primary">Update</b-button>
@@ -161,6 +181,7 @@ import Alert from './Alert.vue';
 export default {
   data() {
     return {
+      selectedRecipe: null,
       addedRecipes:[],
       ingredients:[],
       recipes: [{
@@ -168,21 +189,22 @@ export default {
         category:'',
         meal:'',
         added: false,
-        ingredients: '',
+        ingredients: [],
         directions: '',
       }],
       addRecipeForm:{
         title: '',
         category:'',
         meal: '',
+        ingredients: [],
         added: false,
       },
-      selectedRecipe: null,
       editForm:{
         id: '',
         title: '',
         category:'',
         meal: '',
+        ingredients: [],
         added: false,
       },
       message: '',
@@ -291,6 +313,7 @@ export default {
         title: this.editForm.title,
         category: this.editForm.category,
         meal: this.editForm.meal,
+        ingredients: this.editForm.ingredients,
         added,
       };
       this.updateRecipe(payload, this.editForm.id);
@@ -326,11 +349,13 @@ export default {
       this.addRecipeForm.title = '';
       this.addRecipeForm.category = '';
       this.addRecipeForm.meal ='';
+      this.addRecipeForm.ingredients=[];
       this.editForm.id ='';
       this.editForm.title = '';
       this.editForm.category='';
       this.editForm.meal='';
       this.editForm.added = [];
+      this.editform.ingredients = [];
     },
 
     onSubmit(evt){
@@ -342,7 +367,8 @@ export default {
       const payload = {
         title: this.addRecipeForm.title,
         category: this.addRecipeForm.category,
-        meal: this.addRecipeForm.meal
+        meal: this.addRecipeForm.meal,
+        ingredients: this.addRecipeForm.ingredients
       };
           this.addRecipe(payload);
           this.initForm();
